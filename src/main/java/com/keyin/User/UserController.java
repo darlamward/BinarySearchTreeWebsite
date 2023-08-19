@@ -1,7 +1,7 @@
-package com.keyin.Interface;
+package com.keyin.User;
 
 import com.keyin.BinaryTree.BinarySearchTree;
-import com.keyin.Entity.Interface;
+import com.keyin.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,17 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class InterfaceController {
+public class UserController {
 
-    private final InterfaceRepository interfaceRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public InterfaceController(InterfaceRepository interfaceRepository) {
-        this.interfaceRepository = interfaceRepository;
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/enter-numbers")
-    public String showInterfaceInputPage() {
+    public String showUserInputPage() {
         return "enter-numbers";
     }
 
@@ -35,28 +35,51 @@ public class InterfaceController {
     }
 
     @PostMapping("/process-numbers")
-    public String processInterfaceInput(@RequestParam("numbers") String numbers, Model model) {
+    public <exception extends Throwable> String processUserInput(@RequestParam("numbers") String numbers, Model model) {
+        // Process the user input (you can add your logic here)
         System.out.println("User input numbers: " + numbers);
 
-        BinarySearchTree bst = constructBinarySearchTree(numbers);
+        // Construct the binary search tree
+        BinarySearchTree bst = new BinarySearchTree();
+        String[] numberArray = numbers.split("\\s+");
+        for (String number : numberArray) {
+            try {
+                int value = Integer.parseInt(number);
+                bst.insert(value);
+            } catch (NumberFormatException e) {
+                // Handle invalid input (e.g., non-integer values)
+            }
+        }
 
+        // Convert the tree structure to JSON format
         String treeJson = bst.toJson();
 
-        saveInterfaceInputAndTree(numbers, treeJson);
+        // Save the user input and tree structure to the database
+        User user = new User();
+        user.setInput(numbers);
+        user.setTree(treeJson);
+        try {
+            userRepository.save(user);
+            System.out.println("User saved successfully!");
+        } catch (Exception e) {
+            System.out.println("Couldn't save.");
+        }
 
+
+        // Add the JSON data to the model
         model.addAttribute("jsonData", treeJson);
 
-        return "process-numbers";
+        return "process-numbers"; // Show the "process-numbers" page with JSON data
     }
 
     @GetMapping("/previous-trees")
     public String showPreviousTrees(Model model) {
-        List<Interface> interfaceInputList = interfaceRepository.findAll();
+        List<User> userInputList = userRepository.findAll();
 
         List<String> treeJsonList = new ArrayList<>();
 
-        for (Interface interfaceInput : interfaceInputList) {
-            BinarySearchTree bst = constructBinarySearchTree(interfaceInput.getInput());
+        for (User userInput : userInputList) {
+            BinarySearchTree bst = constructBinarySearchTree(userInput.getInput());
             String treeJson = bst.toJson();
             treeJsonList.add(treeJson);
         }
@@ -79,10 +102,4 @@ public class InterfaceController {
         return bst;
     }
 
-    private void saveInterfaceInputAndTree(String numbers, String treeJson) {
-        Interface interfaceInput = new Interface();
-        interfaceInput.setInput(numbers);
-        interfaceInput.setTree(treeJson);
-        interfaceRepository.save(interfaceInput);
-    }
 }

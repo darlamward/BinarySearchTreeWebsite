@@ -2,16 +2,18 @@ package com.keyin.Entity;
 
 import javax.persistence.*;
 @Entity
-public class Interface {
+public class User {
     @Id
-    @SequenceGenerator(name = "interface_sequence", sequenceName = "interface_sequence", allocationSize = 1, initialValue = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "interface_sequence")
+    @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
     private Long id;
     private String input;
     @Column(columnDefinition = "TEXT")
     private String tree;
 
-    public Interface() {
+    public User() {
+    }
+    public User(String input) {
         this.input = input;
     }
 

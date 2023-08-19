@@ -1,8 +1,8 @@
 package com.keyin;
 
-import com.keyin.Entity.Interface;
-import com.keyin.Interface.InterfaceController;
-import com.keyin.Interface.InterfaceRepository;
+import com.keyin.Entity.User;
+import com.keyin.User.UserController;
+import com.keyin.User.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,13 +17,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class InterfaceControllerTest {
+public class UserControllerTest {
 
     @InjectMocks
-    private InterfaceController interfaceController;
+    private UserController userController;
 
     @Mock
-    private InterfaceRepository interfaceRepository;
+    private UserRepository userRepository;
 
     @BeforeEach
     public void setUp() {
@@ -31,23 +31,23 @@ public class InterfaceControllerTest {
     }
 
     @Test
-    public void testShowInterfaceInputPage() {
-        String viewName = interfaceController.showInterfaceInputPage();
+    public void testShowUserInputPage() {
+        String viewName = userController.showUserInputPage();
         assertEquals("enter-numbers", viewName);
     }
 
     @Test
     public void testShowHomePage() {
-        ModelAndView modelAndView = interfaceController.showHomePage();
+        ModelAndView modelAndView = userController.showHomePage();
         assertEquals("index", modelAndView.getViewName());
     }
 
     @Test
-    public void testProcessInterfaceInput() {
+    public void testProcessUserInput() {
         String numbers = "5 3 7";
         Model model = mock(Model.class);
 
-        String viewName = interfaceController.processInterfaceInput(numbers, model);
+        String viewName = userController.processUserInput(numbers, model);
 
         // Add your assertions here
         // For example, you can check if the model contains the expected attributes
@@ -57,11 +57,11 @@ public class InterfaceControllerTest {
 
     @Test
     public void testShowPreviousTrees() {
-        List<Interface> interfaceInputList = new ArrayList<>();
-        when(interfaceRepository.findAll()).thenReturn(interfaceInputList);
+        List<User> userInputList = new ArrayList<>();
+        when(userRepository.findAll()).thenReturn(userInputList);
         Model model = mock(Model.class);
 
-        String viewName = interfaceController.showPreviousTrees(model);
+        String viewName = userController.showPreviousTrees(model);
 
         // Add your assertions here
         // For example, you can check if the model contains the expected attributes
